@@ -7,26 +7,28 @@ tot_frequency = 20000
 
 # The following functions are for the audio spectrum waveform visualisation
 def piff(frequency, chunk):
-	""" Power Index For Frequency:
-	
-		power is an array used below in fxn calculate_levels.
-		It contains the values corresponding to the relative
-		amplitude of the audio at certain frequencies.
-		Assuming stream / microphone records from 
-		0 - 20000 Hz, this function returns the index of array power 
-		corresponding to a certain frequency, with results 
-		spread out between the 0th index and the last index of power. 
-	"""
-	ratio = float(frequency) / tot_frequency
-	num_indices = chunk/2
-	index = ratio*num_indices
-	return int(index)
-   
+    """ 
+    Power Index For Frequency:
+
+        power is an array used below in fxn calculate_levels.
+        It contains the values corresponding to the relative
+        amplitude of the audio at certain frequencies.
+        Assuming stream / microphone records from 
+        0 - 20000 Hz, this function returns the index of array power 
+        corresponding to a certain frequency, with results 
+        spread out between the 0th index and the last index of power. 
+    """
+    ratio = float(frequency) / tot_frequency
+    num_indices = chunk/2
+    index = ratio*num_indices
+    return int(index)
+
 def calculate_levels(zero_matrix, data, chunk, sample_rate):
-#    weighting = [1,   2,   2,   2,   2,   1,   1,   1,   1,   1, 
-#                 1,   1,   1,   1,   1,   1,   1,   1,   1,   1,
-#                 1,   1,   1,   10,  10,  10,  8,  16,  16,  80, 
-#                 160, 320]
+    weighting = [  1,   5,   7,   6,   8,   8,  13,  22,
+                  33,  71, 112, 128, 141, 161, 172, 192, 
+                 213, 230, 238, 256, 270, 279, 285, 293,
+                 299, 304, 308, 312, 315, 317, 318, 319]
+
     matrix = zero_matrix
     # Convert raw data (ASCII string) to numpy array of length chunk/2 +1
     data = unpack("%dH"%(len(data)/2),data)
@@ -47,9 +49,8 @@ def calculate_levels(zero_matrix, data, chunk, sample_rate):
 		ind2 =  piff(freq2, chunk)
 		matrix[iii] = int(np.mean(power[ind1: ind2]))
     
-#    print matrix
     # Tidy up column values for the LED matrix
-#    matrix=np.divide(np.multiply(matrix, weighting), 60000)
+    matrix = np.divide(np.multiply(matrix, weighting), 16878)
     # Set floor at 0 and ceiling at 32 for LED matrix
-#    matrix=matrix.clip(0,32)
+    matrix = matrix.clip(0,32)
     return matrix

@@ -26,22 +26,23 @@ stream = p.open(format = form,
 
 # Spectrum Loop
 zero_matrix = [0]*32
-output = open("Thundercat - A Fan's Mail (Tron Song Suite II)", "w")
+# output = open("Thundercat - A Fan's Mail (Tron Song Suite II)", "w")
 while 1:
     try:
         # Get microphone data from stream
         data = stream.read(chunk, exception_on_overflow = False)
         matrix = fxns.calculate_levels(zero_matrix, data, chunk, sample_rate)
-        for iii in range(len(matrix)):
-			output.write(str(matrix[iii]))
-			output.write("\t")
-        output.write("\n")
+        print matrix
+#        for iii in range(len(matrix)):
+#            output.write(str(matrix[iii]))
+#            output.write("\t")
+#        output.write("\n")
     except KeyboardInterrupt:
         print("Ctrl-C Terminating...")
         stream.stop_stream()
         stream.close()
         p.terminate()
-        output.close()
+#        output.close()
         sys.exit(1)
     except Exception, e:
         print(e)
@@ -49,5 +50,5 @@ while 1:
         stream.stop_stream()
         stream.close()
         p.terminate()
-        output.close()
+#        output.close()
         sys.exit(1)

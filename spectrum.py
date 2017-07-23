@@ -50,11 +50,11 @@ while 1:
         # Get microphone data
         data = stream.read(chunk, exception_on_overflow = False)
         matrix = fxns.calculate_levels(zero_matrix, data, chunk, sample_rate)
-	print(matrix)
+
         led.all_off()
-        for y in range (0,32):
-			for x in range(0, matrix[y]):
-				led.set(x, y, spectrum[x])
+        for y in range(32):
+            for x in range(matrix[y]):
+                led.set(x, y, spectrum[x])
         led.update()
     except KeyboardInterrupt:
         print("Ctrl-C Terminating...")
